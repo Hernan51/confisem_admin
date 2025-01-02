@@ -1,0 +1,144 @@
+body {
+    font-family: "Poppins", sans-serif;
+    background-color: #56baed;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  
+  .wrapper {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    width: 90%;
+    max-width: 800px;
+  }
+  
+  #formContent h2, #formContent h3 {
+    text-align: center;
+  }
+  
+  #formCrearUsuario {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  #formCrearUsuario input, #formCrearUsuario select, #formCrearUsuario button {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+  }
+  
+  #formCrearUsuario button {
+    background-color: #56baed;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  
+  #formCrearUsuario button:hover {
+    background-color: #39ace7;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  table th, table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  table th {
+    background-color: #f2f2f2;
+  }
+  
+  button.eliminar, button.guardar {
+    padding: 5px 10px;
+    font-size: 14px;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+  
+  button.eliminar {
+    background-color: #e74c3c;
+  }
+  
+  button.eliminar:hover {
+    background-color: #c0392b;
+  }
+  
+  button.guardar {
+    background-color: #56baed;
+  }
+  
+  button.guardar:hover {
+    background-color: #39ace7;
+  }
+  
+
+/* Estilo para el menú de perfil */
+.profile-menu {
+    position: absolute;
+    top: 20px;
+    display: flex;
+    align-items: center;
+    right: 50px;
+    text-align: right;
+    gap: 10px;
+  }
+
+  #user-name {
+    font-size: 20px;
+    font-weight: bold;
+    color: #000000;
+  }
+  
+  .profile-icon {
+    width: 40px;
+    cursor: pointer;
+  }
+  
+  .dropdown-menu {
+    list-style: none;
+    margin: 0;
+    padding: 5px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 50px;
+    min-width: 120px;
+    z-index: 10;
+  }
+  
+  .dropdown-menu li {
+    padding: 10px;
+    cursor: pointer;
+    color: #333;
+    text-align: center;
+    transition: background-color 0.3s ease;
+    display: block;
+  }
+  
+  .dropdown-menu li:hover {
+    background-color: #f0f0f0;
+  }
+  
+  /* Mostrar menú cuando está activo */
+  .dropdown-menu.active {
+    display: block;
+  }
+  

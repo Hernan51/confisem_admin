@@ -1,0 +1,124 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+  }
+  
+  .dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #0051ff;
+    color: white;
+  }
+  
+  .banner-image {
+    width: 150px;
+  }
+  
+  .profile-menu {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .profile-icon {
+    width: 40px;
+    cursor: pointer;
+  }
+  
+  .dashboard-main {
+    display: flex;
+    height: calc(100vh - 60px);
+  }
+  
+  .panel {
+    flex: 1;
+    border: 1px solid #ddd;
+    padding: 20px;
+    overflow-y: auto;
+  }
+  
+  .panel h2 {
+    margin-top: 0;
+  }
+  
+  #chat-window {
+    height: calc(90% - 60px);
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    padding: 10px;
+    background-color: #f9f9f9;
+  }
+  
+  #chat-form {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+  }
+  
+  #chat-input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+  }
+  
+  #upload-btn {
+    cursor: pointer;
+  }
+/* Estilo para el menú de perfil */
+.profile-menu {
+    position: absolute;
+    top: 20px;
+    display: flex;
+    align-items: center;
+    right: 50px;
+    text-align: right;
+    gap: 10px;
+  }
+
+  #user-name {
+    font-size: 20px;
+    font-weight: bold;
+    color: #000000;
+  }
+  
+  .profile-icon {
+    width: 40px;
+    cursor: pointer;
+  }
+  
+  .dropdown-menu {
+    list-style: none;
+    margin: 0;
+    padding: 5px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 50px;
+    min-width: 120px;
+    z-index: 50;
+  }
+  
+  .dropdown-menu li {
+    padding: 10px;
+    cursor: pointer;
+    color: #333;
+    text-align: center;
+    transition: background-color 0.3s ease;
+    display: block;
+  }
+  
+  .dropdown-menu li:hover {
+    background-color: #f0f0f0;
+  }
+  
+  /* Mostrar menú cuando está activo */
+  .dropdown-menu.active {
+    display: block;
+  }

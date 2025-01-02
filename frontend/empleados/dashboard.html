@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard de Empleados</title>
+  <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+  <div class="dashboard-container">
+    <!-- Menú superior -->
+    <header class="dashboard-header">
+      <div class="banner-container">
+        <img src="../logo.png" alt="Banner" class="banner-image">
+      </div>
+      <div class="profile-menu">
+        <span id="user-name">Empleado</span>
+        <img src="../user.png" alt="Ícono de perfil" class="profile-icon">
+        <ul class="dropdown-menu">
+          <li id="logout">Cerrar sesión</li>
+        </ul>
+      </div>
+    </header>
+
+    <!-- Contenido principal -->
+    <main class="dashboard-main">
+      <!-- Panel izquierdo: Peticiones generales -->
+      <section class="panel peticiones">
+        <h2>Peticiones generales</h2>
+        <ul id="peticiones-list">
+          <!-- Aquí se cargarán dinámicamente las peticiones -->
+        </ul>
+      </section>
+
+      <!-- Panel central: Tareas pendientes -->
+      <section class="panel tareas">
+        <h2>Tareas pendientes</h2>
+        <ul id="tareas-list">
+          <!-- Aquí se cargarán las tareas aceptadas -->
+        </ul>
+      </section>
+
+      <!-- Panel derecho: Chat -->
+      <section class="panel chat">
+        <h2>Chat</h2>
+        <div id="chat-window">
+          <!-- Mensajes del chat -->
+        </div>
+        <form id="chat-form">
+          <input type="text" id="chat-input" placeholder="Escribe un mensaje...">
+          <input type="file" id="file-upload" style="display: none;">
+          <button type="button" id="upload-btn">📁</button>
+          <button type="submit">Enviar</button>
+        </form>
+      </section>
+    </main>
+  </div>
+
+  <section class="panel historial">
+    <h2>Historial de solicitudes</h2>
+    <select id="clienteSelect">
+      <!-- Opciones de clientes se llenan dinámicamente -->
+    </select>
+    <ul id="historial-list">
+      <!-- El historial se llena dinámicamente -->
+    </ul>
+  </section>
+  
+
+  <script src="dashboard.js"></script>
+</body>
+</html>

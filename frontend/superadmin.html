@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestión de Usuarios</title>
+  <link rel="stylesheet" href="superadmin.css">
+</head>
+<body>
+  <div class="wrapper fadeInDown">
+    
+    <!-- Menú de perfil -->
+    <div class="profile-menu">
+      <span id="user-name">Usuario</span>
+      <img src="user.png" alt="Ícono de perfil" class="profile-icon" id="profileIcon">
+      <ul class="dropdown-menu" id="dropdownMenu">
+        <li id="logout">Cerrar sesión</li>
+      </ul>
+    </div>
+    
+
+    <!-- Contenido principal -->
+    <div id="formContent">
+      <h2 class="active">Gestión de Usuarios</h2>
+
+      <!-- Formulario para dar de alta usuarios -->
+      <form id="formCrearUsuario">
+        <input type="text" id="nombre" placeholder="Nombre" required>
+        <input type="email" id="correo" placeholder="Correo" required>
+        <input type="password" id="contrasena" placeholder="Contraseña" required>
+        <select id="rol">
+          <option value="usuario">Usuario</option>
+          <option value="admin">Admin</option>
+        </select>
+        <button type="submit">Registrar</button>
+      </form>
+
+      <!-- Tabla para modificar o eliminar usuarios -->
+      <h3>Modificar o eliminar usuarios</h3>
+      <table id="tablaUsuarios">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Correo</th>
+            <th>Rol</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Los datos de los usuarios se cargarán aquí -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script src="superadmin.js"></script>
+</body>
+</html>

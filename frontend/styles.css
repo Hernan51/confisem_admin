@@ -1,0 +1,107 @@
+@import url('https://fonts.googleapis.com/css?family=Poppins');
+
+html {
+  background-color: #56baed;
+  height: 100%;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+  margin: 0;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.wrapper {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  max-width: 450px;
+  padding: 20px;
+}
+
+#formContent {
+  background: #fff;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+  text-align: center;
+}
+
+#formFooter {
+  background-color: #f6f6f6;
+  border-top: 1px solid #dce8f1;
+  padding: 25px;
+  text-align: center;
+}
+
+h2.inactive {
+  color: #cccccc;
+  cursor: pointer;
+}
+
+h2.active {
+  color: #0d0d0d;
+  border-bottom: 2px solid #5fbae9;
+}
+
+input[type=email], input[type=password], input[type=text] {
+  background-color: #f6f6f6;
+  border: none;
+  color: #0d0d0d;
+  padding: 15px;
+  text-align: center;
+  font-size: 16px;
+  margin: 5px;
+  width: 85%;
+  border: 2px solid #f6f6f6;
+  border-radius: 5px;
+  transition: all 0.5s ease-in-out;
+}
+
+input[type=email]:focus, input[type=password]:focus, input[type=text]:focus {
+  background-color: #fff;
+  border-bottom: 2px solid #5fbae9;
+}
+
+input[type=submit] {
+  background-color: #56baed;
+  border: none;
+  color: white;
+  padding: 15px 80px;
+  text-transform: uppercase;
+  font-size: 13px;
+  border-radius: 5px;
+  transition: all 0.3s ease-in-out;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+input[type=submit]:hover {
+  background-color: #39ace7;
+}
+
+input[type=submit]:active {
+  transform: scale(0.95);
+}
+
+.underlineHover:hover {
+  color: #0d0d0d;
+}
+
+#icon {
+  width: 60%;
+}
+
+*:focus {
+  outline: none;
+}
+
+/* Mostrar menú desplegable al pasar el mouse */
+.profile-menu:hover .dropdown-menu {
+  display: block;
+}
