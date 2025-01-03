@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:3000"; // Cambiar por la URL de tu backend
+const API_URL = "http://54.123.45.67:3000"; // Cambiar por la URL de tu backend
 
 // Redirigir al login si no hay usuario autenticado
 if (!localStorage.getItem("usuario")) {

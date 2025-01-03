@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:3000"; // Cambia esta URL si el backend está en un servidor diferente
+const API_URL = "http://54.123.45.67:3000"; // Cambia esta URL si el backend está en un servidor diferente
 
 // Login
 document.getElementById("formLogin").addEventListener("submit", async (e) => {

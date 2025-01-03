@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:3000";
+const API_URL = "http://54.123.45.67:3000";
 
 // Recuperar el nombre del usuario del almacenamiento local
 const usuario = JSON.parse(localStorage.getItem("usuario"));

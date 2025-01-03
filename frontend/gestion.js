@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:3000";
+const API_URL = "http://54.123.45.67:3000";
 const token = localStorage.getItem("token");
 
 // Verifica si el usuario está autenticado
