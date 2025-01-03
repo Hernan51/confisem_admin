@@ -143,6 +143,34 @@ app.delete("/usuarios/:id", async (req, res) => {
   }
 });
 
+app.put("/usuarios/:id", async (req, res) => {
+  const { id } = req.params; // El ID del usuario a actualizar
+  const { nombre, correo, rol } = req.body; // Los nuevos datos enviados en el cuerpo de la solicitud
+
+  if (!nombre || !correo || !rol) {
+    return res.status(400).json({ message: "Todos los campos son requeridos." });
+  }
+
+  try {
+    const connection = await mysql.createConnection(dbConfig);
+    const [result] = await connection.execute(
+      "UPDATE usuarios SET nombre = ?, correo = ?, rol = ? WHERE id = ?",
+      [nombre, correo, rol, id]
+    );
+    await connection.end();
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Usuario no encontrado." });
+    }
+
+    res.json({ message: "Usuario actualizado correctamente." });
+  } catch (error) {
+    console.error("Error al actualizar usuario:", error);
+    res.status(500).json({ message: "Error al actualizar usuario." });
+  }
+});
+
+
 app.post('/peticiones', async (req, res) => {
   const { descripcion, cliente_id } = req.body;
   
