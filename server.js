@@ -145,51 +145,80 @@ app.delete("/usuarios/:id", async (req, res) => {
 
 app.post('/peticiones', async (req, res) => {
   const { descripcion, cliente_id } = req.body;
-  try {
-      const connection = await mysql.createConnection(dbConfig);
-      await connection.execute(
-          "INSERT INTO peticiones (descripcion, cliente_id) VALUES (?, ?)",
-          [descripcion, cliente_id]
-      );
-      await connection.end();
-      res.status(201).json({ message: 'Petición creada exitosamente.' });
-  } catch (error) {
-      console.error("Error al crear petición:", error);
-      res.status(500).json({ message: 'Error al crear petición.' });
+  
+  if (!descripcion || !cliente_id) {
+    return res.status(400).json({ message: "Descripción y cliente_id son obligatorios." });
   }
-});
 
-
-app.get('/peticiones', async (req, res) => {
   try {
-      const connection = await mysql.createConnection(dbConfig);
-      const [rows] = await connection.execute(
-          "SELECT * FROM peticiones WHERE estado = 'pendiente'"
-      );
-      await connection.end();
-      res.json(rows);
+    const connection = await mysql.createConnection(dbConfig);
+    await connection.execute(
+      "INSERT INTO peticiones (descripcion, cliente_id, estado) VALUES (?, ?, 'pendiente')",
+      [descripcion, cliente_id]
+    );
+    await connection.end();
+    res.status(201).json({ message: 'Petición creada exitosamente.' });
   } catch (error) {
-      console.error("Error al obtener peticiones:", error);
-      res.status(500).json({ message: 'Error al obtener peticiones.' });
+    console.error("Error al crear petición:", error);
+    res.status(500).json({ message: 'Error al crear petición.' });
   }
 });
 
 
 app.post('/peticiones/:id/aceptar', async (req, res) => {
   const { id } = req.params;
+
   try {
-      const connection = await mysql.createConnection(dbConfig);
-      await connection.execute(
-          "UPDATE peticiones SET estado = 'aceptada' WHERE id = ?",
-          [id]
-      );
-      await connection.end();
-      res.json({ message: 'Petición aceptada.' });
+    const connection = await mysql.createConnection(dbConfig);
+
+    // Cambiar estado de la petición
+    await connection.execute(
+      "UPDATE peticiones SET estado = 'trabajando' WHERE id = ?",
+      [id]
+    );
+
+    await connection.end();
+    res.status(200).json({ message: 'Petición aceptada y movida a tareas pendientes.' });
   } catch (error) {
-      console.error("Error al aceptar petición:", error);
-      res.status(500).json({ message: 'Error al aceptar petición.' });
+    console.error("Error al aceptar petición:", error);
+    res.status(500).json({ message: 'Error al aceptar petición.' });
   }
 });
+
+
+
+
+app.get('/tareas', async (req, res) => {
+  try {
+    const connection = await mysql.createConnection(dbConfig);
+    const [tareas] = await connection.execute(
+      `SELECT * FROM tareas WHERE estado = 'pendiente'` // CORRECTO
+    );
+    await connection.end();
+    res.json(tareas);
+  } catch (error) {
+    console.error('Error al obtener tareas pendientes:', error);
+    res.status(500).json({ message: 'Error al obtener las tareas' });
+  }
+});
+
+
+
+app.post("/tareas/:id/completar", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const connection = await mysql.createConnection(dbConfig);
+    await connection.execute("UPDATE tareas SET estado = 'completada' WHERE id = ?", [id]);
+    await connection.end();
+
+    res.status(200).json({ message: "Tarea completada" });
+  } catch (error) {
+    console.error("Error al completar tarea:", error);
+    res.status(500).json({ message: "Error al completar tarea" });
+  }
+});
+
 
 
 app.get('/clientes/:id/historial', async (req, res) => {
@@ -210,37 +239,131 @@ app.get('/clientes/:id/historial', async (req, res) => {
   }
 });
 
+app.post('/peticiones/:id/aceptar', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const connection = await mysql.createConnection(dbConfig);
+
+    // Cambiar estado de la petición a "trabajando"
+    await connection.execute("UPDATE peticiones SET estado = 'trabajando' WHERE id = ?", [id]);
+
+    await connection.end();
+    res.status(200).json({ message: 'Petición aceptada y movida a trabajando.' });
+  } catch (error) {
+    console.error("Error al aceptar petición:", error);
+    res.status(500).json({ message: 'Error al aceptar petición.' });
+  }
+});
+
 app.post('/peticiones/:id/completar', async (req, res) => {
   const { id } = req.params;
 
   try {
-      const connection = await mysql.createConnection(dbConfig);
+    const connection = await mysql.createConnection(dbConfig);
 
-      // Obtener la petición
-      const [peticion] = await connection.execute("SELECT * FROM peticiones WHERE id = ?", [id]);
+    // Cambiar estado de la petición a "completado"
+    await connection.execute("UPDATE peticiones SET estado = 'completado' WHERE id = ?", [id]);
 
-      if (peticion.length === 0) {
-          return res.status(404).json({ message: "Petición no encontrada." });
-      }
-
-      // Mover la petición al historial
-      await connection.execute(
-          "INSERT INTO historial_pedidos (cliente_id, descripcion, estado, archivo_url) VALUES (?, ?, ?, ?)",
-          [peticion[0].cliente_id, peticion[0].descripcion, 'completado', null]
-      );
-
-      // Eliminar la petición de la tabla de peticiones
-      await connection.execute("DELETE FROM peticiones WHERE id = ?", [id]);
-
-      await connection.end();
-
-      res.json({ message: "Petición completada y movida al historial." });
+    await connection.end();
+    res.status(200).json({ message: 'Petición marcada como completada.' });
   } catch (error) {
-      console.error("Error al completar petición:", error);
-      res.status(500).json({ message: "Error al completar petición." });
+    console.error("Error al completar petición:", error);
+    res.status(500).json({ message: 'Error al completar petición.' });
   }
 });
 
+
+app.get('/peticiones/pendientes', async (req, res) => {
+  try {
+    const connection = await mysql.createConnection(dbConfig);
+    const [rows] = await connection.execute("SELECT * FROM peticiones WHERE estado = 'pendiente'");
+    await connection.end();
+
+    res.json(rows);
+  } catch (error) {
+    console.error("Error al obtener peticiones pendientes:", error);
+    res.status(500).json({ message: 'Error al obtener peticiones pendientes.' });
+  }
+});
+
+app.get('/peticiones/trabajando', async (req, res) => {
+  try {
+    const connection = await mysql.createConnection(dbConfig);
+    const [rows] = await connection.execute("SELECT * FROM peticiones WHERE estado = 'trabajando'");
+    await connection.end();
+
+    res.json(rows);
+  } catch (error) {
+    console.error("Error al obtener peticiones en progreso:", error);
+    res.status(500).json({ message: 'Error al obtener peticiones en progreso.' });
+  }
+});
+
+
+app.post("/chat", async (req, res) => {
+  const { cliente_id, peticion_id, mensaje, archivo_url, emisor } = req.body;
+
+  if (!cliente_id || !peticion_id || !mensaje || !emisor) {
+    return res.status(400).json({ message: "Todos los campos son obligatorios." });
+  }
+
+  try {
+    const connection = await mysql.createConnection(dbConfig);
+
+    await connection.execute(
+      "INSERT INTO mensajes (cliente_id, peticion_id, mensaje, archivo_url, emisor) VALUES (?, ?, ?, ?, ?)",
+      [cliente_id, peticion_id, mensaje, archivo_url || null, emisor]
+    );
+
+    await connection.end();
+
+    res.status(201).json({ message: "Mensaje enviado correctamente." });
+  } catch (error) {
+    console.error("Error al enviar mensaje:", error);
+    res.status(500).json({ message: "Error al enviar mensaje." });
+  }
+});
+
+app.get("/chat/:cliente_id/:peticion_id", async (req, res) => {
+  const { cliente_id, peticion_id } = req.params;
+
+  try {
+    const connection = await mysql.createConnection(dbConfig);
+
+    const [rows] = await connection.execute(
+      "SELECT * FROM mensajes WHERE cliente_id = ? AND peticion_id = ? ORDER BY fecha_envio",
+      [cliente_id, peticion_id]
+    );
+
+    await connection.end();
+
+    res.json(rows);
+  } catch (error) {
+    console.error("Error al obtener mensajes:", error);
+    res.status(500).json({ message: "Error al obtener mensajes." });
+  }
+});
+
+app.get("/peticiones/:cliente_id", async (req, res) => {
+  const { cliente_id } = req.params;
+
+  try {
+    const connection = await mysql.createConnection(dbConfig);
+
+    const [rows] = await connection.execute(
+      "SELECT * FROM peticiones WHERE cliente_id = ? ORDER BY fecha_creacion DESC",
+      [cliente_id]
+    );
+
+    await connection.end();
+
+    res.json(rows);
+  } catch (error) {
+    console.error("Error al obtener peticiones:", error);
+    res.status(500).json({ message: "Error al obtener peticiones." });
+  }
+});
 
 
 // Iniciar el servidor

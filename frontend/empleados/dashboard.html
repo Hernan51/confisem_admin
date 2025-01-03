@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard de Empleados</title>
   <link rel="stylesheet" href="dashboard.css">
+  <link rel="icon" href="../icono.png" type="image/x-icon">
 </head>
 <body>
   <div class="dashboard-container">
@@ -14,9 +15,9 @@
         <img src="../logo.png" alt="Banner" class="banner-image">
       </div>
       <div class="profile-menu">
-        <span id="user-name">Empleado</span>
-        <img src="../user.png" alt="Ícono de perfil" class="profile-icon">
-        <ul class="dropdown-menu">
+        <span id="user-name">Usuario</span>
+        <img src="../user.png" alt="Ícono de perfil" class="profile-icon" id="profileIcon">
+        <ul class="dropdown-menu" id="dropdownMenu">
           <li id="logout">Cerrar sesión</li>
         </ul>
       </div>
@@ -26,24 +27,28 @@
     <main class="dashboard-main">
       <!-- Panel izquierdo: Peticiones generales -->
       <section class="panel peticiones">
-        <h2>Peticiones generales</h2>
-        <ul id="peticiones-list">
-          <!-- Aquí se cargarán dinámicamente las peticiones -->
-        </ul>
+        <h2>Peticiones Generales</h2>
+        <div class="panel-content">
+          <ul id="peticiones-list">
+            <!-- Aquí se cargarán dinámicamente las peticiones -->
+          </ul>
+        </div>
       </section>
 
       <!-- Panel central: Tareas pendientes -->
       <section class="panel tareas">
-        <h2>Tareas pendientes</h2>
-        <ul id="tareas-list">
-          <!-- Aquí se cargarán las tareas aceptadas -->
-        </ul>
+        <h2>Tareas Pendientes</h2>
+        <div class="panel-content">
+          <ul id="tareas-list">
+            <!-- Aquí se cargarán dinámicamente las tareas -->
+          </ul>
+        </div>
       </section>
 
       <!-- Panel derecho: Chat -->
       <section class="panel chat">
         <h2>Chat</h2>
-        <div id="chat-window">
+        <div class="panel-content" id="chat-window">
           <!-- Mensajes del chat -->
         </div>
         <form id="chat-form">
@@ -55,17 +60,6 @@
       </section>
     </main>
   </div>
-
-  <section class="panel historial">
-    <h2>Historial de solicitudes</h2>
-    <select id="clienteSelect">
-      <!-- Opciones de clientes se llenan dinámicamente -->
-    </select>
-    <ul id="historial-list">
-      <!-- El historial se llena dinámicamente -->
-    </ul>
-  </section>
-  
 
   <script src="dashboard.js"></script>
 </body>
