@@ -8,7 +8,7 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 10px 20px;
-    background-color: #56baed;
+    background-color: #3fada7f5;
     color: white;
   }
   
@@ -87,7 +87,7 @@ body {
   }
   
   .profileIcon {
-    width: 40px;
+    width: 50px;
     cursor: pointer;
   }
   

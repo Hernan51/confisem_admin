@@ -13,21 +13,39 @@ async function cargarPeticionesGenerales() {
     const response = await fetch(`${API_URL}/peticiones/pendientes`);
     const peticiones = await response.json();
 
+    // Ordenar las peticiones por nivel de urgencia
+    peticiones.sort((a, b) => {
+      const urgenciaNivel = { alta: 1, media: 2, baja: 3 };
+      return urgenciaNivel[a.urgencia] - urgenciaNivel[b.urgencia];
+    });
+
     const peticionesList = document.getElementById("peticiones-list");
     peticionesList.innerHTML = "";
 
     peticiones.forEach((peticion) => {
       const li = document.createElement("li");
+      li.className = "peticion-item";
+
+      // Aplicar estilos según el nivel de urgencia
+      if (peticion.urgencia === "alta") {
+        li.style.backgroundColor = "#ffcccc"; // Rojo claro
+      } else if (peticion.urgencia === "media") {
+        li.style.backgroundColor = "#fff5cc"; // Amarillo claro
+      } else if (peticion.urgencia === "baja") {
+        li.style.backgroundColor = "#ccffcc"; // Verde claro
+      }
+
       li.innerHTML = `
         <div class="peticion-item">
-          <span>${peticion.descripcion}</span>
+          <span><strong>${peticion.descripcion}</strong></span><br>
+          <small>Urgencia: ${peticion.urgencia}</small>
           <button class="btn aceptar" data-id="${peticion.id}">Aceptar</button>
-        </div>`;
+        </div>`;  
       peticionesList.appendChild(li);
     });
 
     // Añadir evento a los botones aceptar
-    document.querySelectorAll(".btn.aceptar").forEach(button =>
+    document.querySelectorAll(".btn.aceptar").forEach((button) =>
       button.addEventListener("click", (e) => aceptarPeticion(e.target.dataset.id))
     );
   } catch (error) {
@@ -35,27 +53,48 @@ async function cargarPeticionesGenerales() {
   }
 }
 
+
 // Función para cargar tareas pendientes (estado: trabajando)
 async function cargarTareasPendientes() {
   try {
     const response = await fetch(`${API_URL}/peticiones/trabajando`);
     const tareas = await response.json();
 
+    // Ordenar las tareas por nivel de urgencia
+    tareas.sort((a, b) => {
+      const urgenciaNivel = { alta: 1, media: 2, baja: 3 };
+      return urgenciaNivel[a.urgencia] - urgenciaNivel[b.urgencia];
+    });
+
     const tareasList = document.getElementById("tareas-list");
     tareasList.innerHTML = "";
 
     tareas.forEach((tarea) => {
       const li = document.createElement("li");
+      li.className = "tarea-item";
+
+      // Aplicar estilos según el nivel de urgencia
+      if (tarea.urgencia === "alta") {
+        li.style.backgroundColor = "#ffcccc"; // Rojo claro
+      } else if (tarea.urgencia === "media") {
+        li.style.backgroundColor = "#fff5cc"; // Amarillo claro
+      } else if (tarea.urgencia === "baja") {
+        li.style.backgroundColor = "#ccffcc"; // Verde claro
+      }
+
+      // Renderizar la tarea con el nombre del empleado responsable
       li.innerHTML = `
         <div class="tarea-item">
-          <span>${tarea.descripcion}</span>
+          <span><strong>${tarea.descripcion}</strong></span><br>
+          <small>Urgencia: ${tarea.urgencia}</small><br>
+          <small>Responsable: ${tarea.empleado_nombre || "Sin asignar"}</small>
           <button class="btn completado" data-id="${tarea.id}">Completado</button>
         </div>`;
       tareasList.appendChild(li);
     });
 
     // Añadir evento a los botones completado
-    document.querySelectorAll(".btn.completado").forEach(button =>
+    document.querySelectorAll(".btn.completado").forEach((button) =>
       button.addEventListener("click", (e) => completarTarea(e.target.dataset.id))
     );
   } catch (error) {
@@ -63,14 +102,30 @@ async function cargarTareasPendientes() {
   }
 }
 
-// Función para aceptar una petición (mover de pendiente a trabajando)
+
+
 async function aceptarPeticion(id) {
   try {
-    const response = await fetch(`${API_URL}/peticiones/${id}/aceptar`, { method: "POST" });
+    const usuarioActual = JSON.parse(localStorage.getItem("usuario"));
+
+    if (!usuarioActual || !usuarioActual.nombre) {
+      alert("No se encontró el usuario actual en localStorage.");
+      return;
+    }
+
+    console.log("Datos enviados al backend:", {
+      empleado_nombre: usuarioActual.nombre,
+    });
+
+    const response = await fetch(`${API_URL}/peticiones/${id}/aceptar`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ empleado_nombre: usuarioActual.nombre }),
+    });
 
     if (response.ok) {
-      cargarPeticionesGenerales(); // Actualiza las peticiones generales
-      cargarTareasPendientes(); // Actualiza las tareas pendientes
+      await cargarPeticionesGenerales();
+      await cargarTareasPendientes();
     } else {
       const errorData = await response.json();
       alert(`Error al aceptar petición: ${errorData.message}`);
@@ -80,6 +135,10 @@ async function aceptarPeticion(id) {
     alert("Error al aceptar petición.");
   }
 }
+
+
+
+
 
 
 // Función para completar una tarea (mover de trabajando a completado)
@@ -98,7 +157,7 @@ async function completarTarea(id) {
 }
 
 // Función para cargar historial de peticiones de un cliente
-async function cargarHistorial() {
+/*async function cargarHistorial() {
   const clienteId = document.getElementById("clienteSelect").value;
 
   try {
@@ -117,6 +176,7 @@ async function cargarHistorial() {
     console.error("Error al cargar historial:", error);
   }
 }
+*/
 
 // Cerrar sesión
 document.addEventListener("DOMContentLoaded", () => {
@@ -146,5 +206,5 @@ document.addEventListener("DOMContentLoaded", () => {
 
   cargarPeticionesGenerales();
   cargarTareasPendientes();
-  document.getElementById("clienteSelect").addEventListener("change", cargarHistorial);
+  //document.getElementById("clienteSelect").addEventListener("change", cargarHistorial);
 });

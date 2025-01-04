@@ -172,17 +172,24 @@ app.put("/usuarios/:id", async (req, res) => {
 
 
 app.post('/peticiones', async (req, res) => {
-  const { descripcion, cliente_id } = req.body;
+  const { descripcion, cliente_id, urgencia} = req.body;
   
   if (!descripcion || !cliente_id) {
     return res.status(400).json({ message: "Descripción y cliente_id son obligatorios." });
   }
 
+  const nivelUrgencia = urgencia || 'media'; // Predeterminado a 'media'
+
+  // Validar que el nivel de urgencia sea válido
+  if (!['alta', 'media', 'baja'].includes(nivelUrgencia)) {
+    return res.status(400).json({ message: "El nivel de urgencia debe ser 'alta', 'media' o 'baja'." });
+  }
+
   try {
     const connection = await mysql.createConnection(dbConfig);
     await connection.execute(
-      "INSERT INTO peticiones (descripcion, cliente_id, estado) VALUES (?, ?, 'pendiente')",
-      [descripcion, cliente_id]
+      "INSERT INTO peticiones (descripcion, cliente_id, estado, urgencia) VALUES (?, ?, 'pendiente', ?)",
+      [descripcion, cliente_id, nivelUrgencia]
     );
     await connection.end();
     res.status(201).json({ message: 'Petición creada exitosamente.' });
@@ -195,23 +202,31 @@ app.post('/peticiones', async (req, res) => {
 
 app.post('/peticiones/:id/aceptar', async (req, res) => {
   const { id } = req.params;
+  const { empleado_nombre } = req.body;
+
+  if (!empleado_nombre) {
+    return res.status(400).json({ message: "El nombre del empleado es obligatorio." });
+  }
 
   try {
     const connection = await mysql.createConnection(dbConfig);
-
-    // Cambiar estado de la petición
+    // Actualizar el estado y registrar el nombre del empleado directamente
     await connection.execute(
-      "UPDATE peticiones SET estado = 'trabajando' WHERE id = ?",
-      [id]
+      "UPDATE peticiones SET estado = 'trabajando', empleado_nombre = ?, fecha_respuesta = NOW() WHERE id = ?",
+      [empleado_nombre, id]
     );
-
     await connection.end();
-    res.status(200).json({ message: 'Petición aceptada y movida a tareas pendientes.' });
+
+    res.status(200).json({ message: "Petición aceptada correctamente." });
   } catch (error) {
     console.error("Error al aceptar petición:", error);
-    res.status(500).json({ message: 'Error al aceptar petición.' });
+    res.status(500).json({ message: "Error al aceptar petición." });
   }
 });
+
+
+
+
 
 
 
@@ -318,15 +333,24 @@ app.get('/peticiones/pendientes', async (req, res) => {
 app.get('/peticiones/trabajando', async (req, res) => {
   try {
     const connection = await mysql.createConnection(dbConfig);
-    const [rows] = await connection.execute("SELECT * FROM peticiones WHERE estado = 'trabajando'");
+
+    // Consulta con JOIN para obtener el nombre del empleado
+    const [rows] = await connection.execute(`
+      SELECT p.id, p.descripcion, p.urgencia, p.estado, u.nombre AS empleado
+      FROM peticiones p
+      LEFT JOIN usuarios u ON p.empleado_id = u.id
+      WHERE p.estado = 'trabajando'
+    `);
+
     await connection.end();
 
-    res.json(rows);
+    res.status(200).json(rows);
   } catch (error) {
-    console.error("Error al obtener peticiones en progreso:", error);
-    res.status(500).json({ message: 'Error al obtener peticiones en progreso.' });
+    console.error("Error al obtener tareas pendientes:", error);
+    res.status(500).json({ message: "Error al obtener tareas pendientes." });
   }
 });
+
 
 
 app.post("/chat", async (req, res) => {
@@ -393,7 +417,11 @@ app.get("/peticiones/:cliente_id", async (req, res) => {
   }
 });
 
-// Iniciar el servidor
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Servidor corriendo en http://0.0.0.0:${PORT}`);
+// Iniciar el servidor AWS QUITAR COMENTARIOS PARA CUANDO ESTE LISTO !!!!
+/*app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Servidor corriendo en http://0.0.0.0:${PORT}`); 
+});
+*/
+app.listen(PORT, () => {
+  console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
